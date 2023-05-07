@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate 
+from flask_migrate import Migrate
 import uuid
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -19,8 +19,8 @@ def load_user(user_id):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.String, primary_key=True)
-    first_name= db.Column(db.String(150), nullable=True, default='')
-    Last_name = db.Column(db.String(150), nullable=True, default='')
+    first_name = db.Column(db.String(150), nullable=True, default='')
+    last_name = db.Column(db.String(150), nullable=True, default='')
     email = db.Column(db.String(150), nullable=False)
     password = db.Column(db.String, nullable=True, default='')
     g_auth_verify = db.Column(db.Boolean, default=False)
@@ -38,43 +38,44 @@ class User(db.Model, UserMixin):
 
     def set_token(self, length):
         return secrets.token_hex(length)
-    
+
     def set_id(self):
         return str(uuid.uuid4())
 
     def set_password(self, password):
         self.pw_hash = generate_password_hash(password)
         return self.pw_hash
-    
+
     def __repr__(self):
         return f'User {self.email} has been added to the database'
-    
+
 class Playlist(db.Model):
     id = db.Column(db.String, primary_key=True)
-    title = db.Column(db.String(150), nullable = False)
-    artist = db.Column(db.String(200))
-    length = db.Column(db.String(20))
-    album = db.Column(db.String(200))
+    artist = db.Column(db.String(150), nullable = False)
+    song = db.Column(db.String(200))
+    album = db.Column(db.String(50))
+    length = db.Column(db.String(50))
+   
     user_token = db.Column(db.String, db.ForeignKey('user.token'), nullable = False)
 
-    def __init__(self, title, artist, length, album, user_token, id=''):
+    def __init__(self, artist, song , album, length, user_token, id=''):
         self.id = self.set_id()
-        self.title = title
-        self.artist = artist
-        self.length = length
+        self.arist = artist
+        self.song = song
         self.album = album
+        self.length = length
+        
         self.user_token = user_token
-
+        
     def __repr__(self):
-        return f'The following artis has been added to your playlist : {self.title}'
-    
+        return f'The following artist/song has been added to your collection: {self.artist}'
+
     def set_id(self):
         return (secrets.token_urlsafe())
 
 class PlaylistSchema(ma.Schema):
     class Meta:
-        fields = ['id', 'artist', 'title', 'length', 'album']
+        fields = ['id', 'artist', 'song', 'album', 'length']
 
 playlist_schema = PlaylistSchema()
-
 playlists_schema = PlaylistSchema(many=True)

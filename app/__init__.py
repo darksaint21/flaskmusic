@@ -10,7 +10,6 @@ from models import db as root_db, login_manager, ma
 from flask_cors import CORS
 from helper import JSONEncoder
 
-
 app = Flask(__name__)
 CORS(app)
 
@@ -18,9 +17,9 @@ app.register_blueprint(site)
 app.register_blueprint(auth)
 app.register_blueprint(api)
 
-app.json_encoder =JSONEncoder
+app.json_encoder = JSONEncoder
 app.config.from_object(Config)
 root_db.init_app(app)
 login_manager.init_app(app)
 ma.init_app(app)
-migrate=Migrate(app, root_db)
+migrate = Migrate(app, root_db)
